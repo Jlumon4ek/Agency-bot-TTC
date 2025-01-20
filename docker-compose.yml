@@ -1,0 +1,42 @@
+
+services:
+  postgre:
+    container_name: database
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    env_file:
+      - ./app/.env
+    networks:
+      - ttc-agent
+
+  bot:
+    container_name: bot
+    build: 
+      context: ./app
+      dockerfile: dockerfiles/backend.dockerfile
+    restart: always
+    volumes:
+      - ./app:/app
+    env_file:
+      - ./app/.env
+    networks:
+      - ttc-agent
+  
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - ttc-agent
+
+networks:
+  ttc-agent:
+    driver: bridge
+  
